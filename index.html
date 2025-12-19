@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lalka — Bolesław Prus </title>
+    <title>Lalka — Bolesław Prus</title>
     
     <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -32,7 +32,13 @@
             margin: 0;
             padding: 0;
             overflow-x: hidden;
-            cursor: none;
+            /* Przywrócono standardowy kursor */
+            cursor: default; 
+        }
+
+        /* Wymuszenie łapki na elementach interaktywnych */
+        button, a, .hoverable, .cursor-pointer {
+            cursor: pointer !important;
         }
 
         .serif { font-family: 'Playfair Display', serif; }
@@ -41,61 +47,10 @@
             position: fixed;
             inset: 0;
             pointer-events: none;
-            z-index: 9000;
+            z-index: -1; /* Zmiana z 9000 na -1, aby nie blokowało kliknięć systemowych */
             opacity: 0.15;
             background-image: url('https://www.transparenttextures.com/patterns/handmade-paper.png');
         }
-
-        /* --- ELEGANCKI KURSOR --- */
-        .cursor-dot {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 6px;
-            height: 6px;
-            background-color: var(--accent-color);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 10001;
-            transform: translate(-50%, -50%);
-        }
-
-        .cursor-outline {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 40px;
-            height: 40px;
-            border: 1px solid var(--accent-color);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 10000;
-            transform: translate(-50%, -50%);
-            transition: width 0.3s ease, height 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .cursor-text {
-            color: var(--accent-color);
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            opacity: 0;
-            white-space: nowrap;
-            transition: opacity 0.3s ease;
-        }
-
-        body.hover-link .cursor-outline {
-            width: 100px;
-            height: 100px;
-            background-color: rgba(140, 42, 33, 0.05);
-            border-color: var(--accent-color);
-        }
-        body.hover-link .cursor-text { opacity: 1; }
-        body.hover-link .cursor-dot { opacity: 0; }
 
         /* Preloader */
         .preloader {
@@ -118,23 +73,33 @@
             backdrop-filter: blur(20px);
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.6s ease;
+            transition: opacity 0.4s ease;
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 1rem; /* Dodany padding dla mobilnych */
         }
 
         .modal-content {
             background: #fff;
-            width: 90%;
+            width: 100%;
             max-width: 700px;
-            padding: 4rem;
+            padding: 2rem; /* Mniejszy padding na start */
             transform: translateY(30px);
             opacity: 0;
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             border: 1px solid rgba(0,0,0,0.05);
             max-height: 90vh;
             overflow-y: auto;
+            position: relative;
+            border-radius: 4px;
+        }
+
+        @media (min-width: 768px) {
+            .modal-content {
+                padding: 4rem;
+                width: 90%;
+            }
         }
 
         #podcast-modal-content { max-width: 900px; }
@@ -147,17 +112,23 @@
             background: rgba(0, 0, 0, 0.95);
         }
         #image-lightbox-overlay img {
-            max-width: 90vw;
-            max-height: 85vh;
+            max-width: 95vw;
+            max-height: 80vh;
             box-shadow: 0 0 50px rgba(0,0,0,0.5);
             transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            object-fit: contain;
         }
 
         /* Sekcje */
         #dualism, #themes, #podcast-section, #characters-section {
-            background-attachment: fixed;
+            background-attachment: scroll; /* Fixed często psuje się na mobile, zmienione na scroll lub media query */
             background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png');
             position: relative;
+        }
+        @media (min-width: 1024px) {
+            #dualism, #themes, #podcast-section, #characters-section {
+                background-attachment: fixed;
+            }
         }
 
         .blueprint-bg {
@@ -191,6 +162,10 @@
             width: 1px;
             background: linear-gradient(to bottom, transparent, var(--gold-color), transparent);
             transform: translateX(-50%);
+            display: none; /* Domyślnie ukryta na mobile */
+        }
+        @media (min-width: 768px) {
+            .split-line { display: block; }
         }
 
         .era-label {
@@ -198,29 +173,35 @@
             text-transform: uppercase;
             letter-spacing: 0.4em;
             color: var(--gold-color);
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             display: block;
         }
 
         .anatomy-title {
-            font-size: 4vw;
+            font-size: 3rem; /* Zmniejszone dla mobile */
             line-height: 1.1;
             margin-bottom: 1rem;
             color: var(--text-color);
         }
+        @media (min-width: 768px) {
+            .anatomy-title { font-size: 4vw; }
+        }
 
         .dual-column {
-            padding: 4rem;
+            padding: 2rem 1rem;
             position: relative;
+        }
+        @media (min-width: 768px) {
+            .dual-column { padding: 4rem; }
         }
 
         .concept-card {
             border-bottom: 1px solid rgba(0,0,0,0.08);
-            padding: 2rem 0;
+            padding: 1.5rem 0;
             transition: all 0.4s ease;
         }
         .concept-card:hover {
-            padding-left: 1rem;
+            padding-left: 0.5rem;
             border-bottom-color: var(--accent-color);
         }
 
@@ -229,7 +210,7 @@
             font-style: italic;
             color: var(--gold-color);
             font-size: 0.8rem;
-            margin-right: 1.5rem;
+            margin-right: 1rem;
         }
 
         .theme-item {
@@ -238,7 +219,7 @@
             border-bottom: 1px solid rgba(0,0,0,0.05);
         }
         .theme-item:hover {
-            transform: translateX(15px);
+            transform: translateX(10px);
             background: rgba(140, 42, 33, 0.02);
         }
         .theme-item h3 { transition: color 0.4s ease; }
@@ -273,6 +254,7 @@
             align-items: center;
             color: var(--accent-color);
             transition: all 0.3s ease;
+            flex-shrink: 0;
         }
         .play-btn:hover {
             background: var(--accent-color);
@@ -287,9 +269,11 @@
             position: relative;
             border-radius: 2px;
             cursor: pointer;
+            padding: 10px 0; /* Większy obszar dotyku */
+            background-clip: content-box;
         }
         .progress-bar {
-            height: 100%;
+            height: 4px;
             background: var(--accent-color);
             width: 0%;
             position: relative;
@@ -307,17 +291,24 @@
             border-radius: 50%;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
+
+        /* Mobile Menu */
+        #mobile-menu {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            background: #000;
+        }
+        #mobile-menu.open {
+            max-height: 400px;
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
 
     <div class="texture-overlay"></div>
-
-    <!-- KURSOR -->
-    <div class="cursor-dot"></div>
-    <div class="cursor-outline">
-        <span class="cursor-text"></span>
-    </div>
 
     <div class="preloader">
         <div class="counter serif">0%</div>
@@ -325,38 +316,38 @@
 
     <!-- MODALE -->
     <div id="character-modal-overlay" class="modal-overlay">
-        <div id="character-modal-content" class="modal-content">
-            <button id="close-character-modal" class="absolute top-8 right-8 text-gray-400 hover:text-black hoverable" data-cursor="ZAMKNIJ">
+        <div id="character-modal-content" class="modal-content relative">
+            <button id="close-character-modal" class="absolute top-4 right-4 md:top-8 md:right-8 text-gray-400 hover:text-black hoverable transition-colors">
                 <i data-lucide="x" class="w-6 h-6"></i>
             </button>
             <div class="flex flex-col">
                 <span class="era-label">Analiza postaci</span>
-                <h2 id="char-name" class="text-4xl serif italic mb-8"></h2>
-                <div class="mb-10">
-                    <p id="char-bio" class="text-gray-600 font-light leading-relaxed text-justify"></p>
+                <h2 id="char-name" class="text-3xl md:text-4xl serif italic mb-6 md:mb-8 pr-8"></h2>
+                <div class="mb-8 md:mb-10">
+                    <p id="char-bio" class="text-gray-600 font-light leading-relaxed text-justify text-sm md:text-base"></p>
                 </div>
-                <div class="p-8 border-l-4 border-[var(--accent-color)] bg-black/[0.02]">
+                <div class="p-6 md:p-8 border-l-4 border-[var(--accent-color)] bg-black/[0.02]">
                     <span class="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-color)] mb-3 block">Finał losów</span>
-                    <p id="char-ending" class="text-xl serif italic leading-relaxed text-black"></p>
+                    <p id="char-ending" class="text-lg md:text-xl serif italic leading-relaxed text-black"></p>
                 </div>
             </div>
         </div>
     </div>
 
     <div id="theme-modal-overlay" class="modal-overlay">
-        <div id="theme-modal-content" class="modal-content">
-            <button id="close-theme-modal" class="absolute top-8 right-8 text-gray-400 hover:text-black hoverable" data-cursor="ZAMKNIJ">
+        <div id="theme-modal-content" class="modal-content relative">
+            <button id="close-theme-modal" class="absolute top-4 right-4 md:top-8 md:right-8 text-gray-400 hover:text-black hoverable transition-colors">
                 <i data-lucide="x" class="w-6 h-6"></i>
             </button>
             <div class="flex flex-col">
                 <span class="era-label">Problematyka utworu</span>
-                <h2 id="theme-name" class="text-4xl serif italic mb-8"></h2>
-                <div class="space-y-10">
+                <h2 id="theme-name" class="text-3xl md:text-4xl serif italic mb-6 md:mb-8 pr-8"></h2>
+                <div class="space-y-8 md:space-y-10">
                     <section>
                         <span class="context-pill">Istota motywu</span>
-                        <p id="theme-desc" class="text-gray-600 font-light leading-relaxed text-justify"></p>
+                        <p id="theme-desc" class="text-gray-600 font-light leading-relaxed text-justify text-sm md:text-base"></p>
                     </section>
-                    <section class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <section class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
                         <div>
                             <span class="context-pill">Kontekst I</span>
                             <h4 id="theme-ctx1-title" class="font-bold text-xs uppercase mb-2"></h4>
@@ -368,7 +359,7 @@
                             <p id="theme-ctx2-desc" class="text-xs text-gray-500 leading-relaxed text-justify"></p>
                         </div>
                     </section>
-                    <section class="p-8 bg-black/[0.02] border-t border-black/5">
+                    <section class="p-6 md:p-8 bg-black/[0.02] border-t border-black/5">
                         <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--gold-color)] mb-4 block">Zagadnienia na rozprawkę</span>
                         <div id="theme-questions-list" class="space-y-4"></div>
                     </section>
@@ -378,23 +369,23 @@
     </div>
 
     <div id="podcast-modal-overlay" class="modal-overlay">
-        <div id="podcast-modal-content" class="modal-content flex flex-col md:flex-row gap-12 items-center">
-            <button id="close-podcast-modal" class="absolute top-8 right-8 text-gray-400 hover:text-black hoverable" data-cursor="ZAMKNIJ">
+        <div id="podcast-modal-content" class="modal-content flex flex-col md:flex-row gap-8 md:gap-12 items-center relative">
+            <button id="close-podcast-modal" class="absolute top-4 right-4 md:top-8 md:right-8 text-gray-400 hover:text-black hoverable transition-colors z-10">
                 <i data-lucide="x" class="w-6 h-6"></i>
             </button>
             <div class="w-full md:w-1/2">
-                <div class="podcast-cover p-2 bg-white rotate-2 hover:rotate-0 transition-transform duration-500">
-                    <img id="podcast-img-trigger" src="grafika.png" alt="Infografika Lalka" class="w-full h-auto object-cover grayscale hover:grayscale-0 transition-all duration-500 cursor-pointer hoverable" data-cursor="POWIĘKSZ" onerror="this.src='https://images.unsplash.com/photo-1621360841013-c768371e93cf?q=80&w=1000&auto=format&fit=crop'">
+                <div class="podcast-cover p-2 bg-white md:rotate-2 hover:rotate-0 transition-transform duration-500 shadow-lg">
+                    <img id="podcast-img-trigger" src="grafika.png" alt="Infografika Lalka" class="w-full h-auto object-cover grayscale hover:grayscale-0 transition-all duration-500 cursor-pointer hoverable" onerror="this.src='https://images.unsplash.com/photo-1621360841013-c768371e93cf?q=80&w=1000&auto=format&fit=crop'">
                 </div>
             </div>
             <div class="w-full md:w-1/2 flex flex-col justify-center">
                 <span class="era-label mb-2">Podcast edukacyjny</span>
-                <h2 class="text-4xl serif italic mb-6">Rozmowa o Lalce</h2>
-                <p class="text-sm text-gray-500 mb-10 leading-relaxed text-justify">Posłuchaj analizy ekspertów z NotebookLM o psychologii Wokulskiego i społecznym tle powieści.</p>
+                <h2 class="text-3xl md:text-4xl serif italic mb-4 md:mb-6">Rozmowa o Lalce</h2>
+                <p class="text-sm text-gray-500 mb-8 md:mb-10 leading-relaxed text-justify">Posłuchaj analizy ekspertów z NotebookLM o psychologii Wokulskiego i społecznym tle powieści.</p>
                 <div class="custom-audio-player">
                     <audio id="audio-file" src="rozmowa.mp3"></audio>
-                    <div class="flex items-center gap-6">
-                        <button id="play-pause-btn" class="play-btn hoverable" data-cursor="GRAJ">
+                    <div class="flex items-center gap-4 md:gap-6">
+                        <button id="play-pause-btn" class="play-btn hoverable">
                             <i data-lucide="play" class="w-6 h-6 fill-current"></i>
                         </button>
                         <div class="flex-1">
@@ -402,7 +393,7 @@
                                 <span id="current-time">0:00</span>
                                 <span id="duration">0:00</span>
                             </div>
-                            <div class="progress-container hoverable" data-cursor="PRZEWIŃ" id="progress-container">
+                            <div class="progress-container hoverable" id="progress-container">
                                 <div class="progress-bar" id="progress-bar"></div>
                             </div>
                         </div>
@@ -413,24 +404,39 @@
     </div>
 
     <div id="image-lightbox-overlay" class="modal-overlay flex-col">
-        <button id="close-image-lightbox" class="absolute top-8 right-8 text-white hover:text-gray-300 hoverable" data-cursor="ZAMKNIJ">
+        <button id="close-image-lightbox" class="absolute top-4 right-4 text-white hover:text-gray-300 hoverable z-20 transition-colors">
             <i data-lucide="x" class="w-8 h-8"></i>
         </button>
         <img id="lightbox-img" src="grafika.png" alt="Powiększona Infografika" class="rounded-lg shadow-2xl" onerror="this.src='https://images.unsplash.com/photo-1621360841013-c768371e93cf?q=80&w=1000&auto=format&fit=crop'">
-        <p class="text-white/50 text-[10px] uppercase tracking-[0.3em] mt-8">Infografika: studium "Lalki"</p>
+        <p class="text-white/50 text-[10px] uppercase tracking-[0.3em] mt-8 text-center">Infografika: studium "Lalki"</p>
     </div>
 
     <!-- NAWIGACJA -->
-    <nav class="fixed top-0 left-0 w-full p-10 flex justify-between items-center z-50 mix-blend-difference text-white">
-        <div class="text-[10px] uppercase tracking-[0.5em] font-bold hoverable" data-cursor="START">Biblioteka maturzysty <span style="color: #FFA500;">ZDZ</span></div>
+    <nav class="fixed top-0 left-0 w-full p-6 md:p-10 flex flex-wrap justify-between items-center z-50 mix-blend-difference text-white">
+        <div class="text-[10px] uppercase tracking-[0.5em] font-bold hoverable z-50">Biblioteka maturzysty <span style="color: #FFA500;">ZDZ</span></div>
+        
+        <!-- Desktop Menu -->
         <div class="hidden md:flex gap-16 text-[13px] uppercase tracking-[0.3em] font-medium serif italic">
-            <a href="#intro" class="hoverable">Lektura</a>
-            <a href="#characters-section" class="hoverable">Bohaterowie</a>
-            <a href="#dualism" class="hoverable">Wokulski</a>
-            <a href="#themes" class="hoverable">Analiza</a>
-            <a href="#" id="nav-podcast-trigger" class="hoverable text-[var(--gold-color)]" data-cursor="PODCAST">Podcast</a>
+            <a href="#intro" class="hoverable hover:text-[var(--gold-color)] transition-colors">Lektura</a>
+            <a href="#characters-section" class="hoverable hover:text-[var(--gold-color)] transition-colors">Bohaterowie</a>
+            <a href="#dualism" class="hoverable hover:text-[var(--gold-color)] transition-colors">Wokulski</a>
+            <a href="#themes" class="hoverable hover:text-[var(--gold-color)] transition-colors">Analiza</a>
+            <a href="#" id="nav-podcast-trigger" class="hoverable text-[var(--gold-color)]">Podcast</a>
         </div>
-        <div class="md:hidden text-[10px] tracking-widest">MENU</div>
+
+        <!-- Mobile Toggle -->
+        <button id="mobile-menu-btn" class="md:hidden text-[10px] tracking-widest uppercase border border-white/30 px-3 py-1 hover:bg-white hover:text-black transition-colors z-50">
+            MENU
+        </button>
+
+        <!-- Mobile Menu Container -->
+        <div id="mobile-menu" class="absolute top-full left-0 w-full md:hidden flex flex-col items-center bg-black text-white py-0 z-40">
+            <a href="#intro" class="py-4 hoverable text-xs tracking-[0.3em]">Lektura</a>
+            <a href="#characters-section" class="py-4 hoverable text-xs tracking-[0.3em]">Bohaterowie</a>
+            <a href="#dualism" class="py-4 hoverable text-xs tracking-[0.3em]">Wokulski</a>
+            <a href="#themes" class="py-4 hoverable text-xs tracking-[0.3em]">Analiza</a>
+            <a href="#" id="mobile-podcast-trigger" class="py-4 hoverable text-xs tracking-[0.3em] text-[var(--gold-color)]">Podcast</a>
+        </div>
     </nav>
 
     <main class="w-full relative z-10">
@@ -441,17 +447,17 @@
                 <img src="https://images.unsplash.com/photo-1519791883288-dc8bd696e667?q=80&w=2070&auto=format&fit=crop" 
                      class="w-full h-full object-cover opacity-20 hero-img scale-110" alt="Tło biblioteki">
             </div>
-            <div class="relative z-10 text-center flex flex-col items-center justify-center w-full px-4 pt-32">
-                <div class="mb-8 overflow-hidden">
-                    <p class="text-lg md:text-xl uppercase tracking-[0.6em] text-[var(--accent-color)] font-semibold hero-anim translate-y-full serif italic mt-16">Bolesław Prus</p>
+            <div class="relative z-10 text-center flex flex-col items-center justify-center w-full px-4 pt-24 md:pt-32">
+                <div class="mb-4 md:mb-8 overflow-hidden">
+                    <p class="text-sm md:text-xl uppercase tracking-[0.6em] text-[var(--accent-color)] font-semibold hero-anim translate-y-full serif italic mt-16">Bolesław Prus</p>
                 </div>
                 
-                <h1 class="text-[12vw] leading-[0.9] serif italic text-black hero-title overflow-hidden text-center">
+                <h1 class="text-[14vw] md:text-[12vw] leading-[0.9] serif italic text-black hero-title overflow-hidden text-center">
                     <div class="hero-anim translate-y-full">Lalka</div>
                 </h1>
 
-                <div class="mt-8 mb-10 max-w-3xl text-center overflow-hidden">
-                    <p class="text-[10px] md:text-xs text-gray-500 uppercase tracking-[0.25em] leading-relaxed hero-anim translate-y-full mb-6">
+                <div class="mt-6 md:mt-8 mb-10 max-w-3xl text-center overflow-hidden px-4">
+                    <p class="text-[9px] md:text-xs text-gray-500 uppercase tracking-[0.25em] leading-relaxed hero-anim translate-y-full mb-6">
                         Arcydzieło polskiego realizmu • Panorama Warszawy 1878 roku
                     </p>
                     <p class="mt-4 text-xs md:text-base text-gray-400 font-light max-w-2xl mx-auto leading-relaxed hero-anim translate-y-full text-center">
@@ -459,8 +465,8 @@
                     </p>
                 </div>
 
-                <div class="mt-12 overflow-hidden max-w-lg">
-                    <p class="text-gray-400 font-light text-sm uppercase tracking-widest hero-anim translate-y-full italic">
+                <div class="mt-8 md:mt-12 overflow-hidden max-w-lg px-4">
+                    <p class="text-gray-400 font-light text-xs md:text-sm uppercase tracking-widest hero-anim translate-y-full italic">
                         Opowieść o miłości, która stała się wyrokiem.
                     </p>
                 </div>
@@ -468,14 +474,14 @@
         </section>
 
         <!-- INTRO -->
-        <section id="intro" class="py-48 px-10 md:px-20 max-w-[1400px] mx-auto text-center md:text-left">
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-20 items-center">
+        <section id="intro" class="py-24 md:py-48 px-6 md:px-20 max-w-[1400px] mx-auto text-center md:text-left">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-20 items-center">
                 <div class="md:col-span-8">
-                    <h2 class="text-5xl md:text-8xl serif leading-tight reveal-on-scroll">
+                    <h2 class="text-4xl md:text-8xl serif leading-tight reveal-on-scroll">
                         "Wokulski to <span class="text-[var(--accent-color)] italic">Hamlet</span><br>w sklepie galanteryjnym."
                     </h2>
                 </div>
-                <div class="md:col-span-4 border-l border-black/10 pl-10 reveal-on-scroll">
+                <div class="md:col-span-4 border-l-0 md:border-l border-black/10 pt-8 md:pt-0 md:pl-10 reveal-on-scroll">
                     <p class="text-gray-500 text-sm leading-loose font-light text-justify">
                         Przez pryzmat jednego człowieka Prus analizuje upadek arystokracji i narodziny drapieżnego kapitalizmu. To literatura, która staje się lustrem społecznym dla pokoleń, ukazując niemożność pogodzenia idealizmu z brutalną rzeczywistością.
                     </p>
@@ -484,14 +490,14 @@
         </section>
 
         <!-- BOHATEROWIE -->
-        <section id="characters-section" class="py-32 px-4">
-            <div class="max-w-[75%] mx-auto">
-                <div class="mb-20 reveal-on-scroll text-center md:text-left">
+        <section id="characters-section" class="py-24 md:py-32 px-6">
+            <div class="w-full md:max-w-[75%] mx-auto">
+                <div class="mb-12 md:mb-20 reveal-on-scroll text-center md:text-left">
                     <span class="era-label">Dramatis personae</span>
-                    <h2 class="text-5xl md:text-7xl serif italic mt-4">Ludzie-"lalki"</h2>
+                    <h2 class="text-4xl md:text-7xl serif italic mt-4">Ludzie-"lalki"</h2>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
-                    <div class="reveal-on-scroll hoverable character-card group" data-character="wokulski" data-cursor="WOKULSKI">
+                    <div class="reveal-on-scroll hoverable character-card group cursor-pointer" data-character="wokulski">
                         <div class="aspect-[3/4] overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-700 shadow-xl">
                             <img src="wokulski.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1000&auto=format&fit=crop'">
                         </div>
@@ -500,7 +506,7 @@
                             <p class="text-[9px] uppercase tracking-[0.3em] text-gray-400 mt-1">Rozdarty idealista</p>
                         </div>
                     </div>
-                    <div class="reveal-on-scroll hoverable character-card group" data-character="izabela" data-cursor="IZABELA" style="transition-delay: 0.1s;">
+                    <div class="reveal-on-scroll hoverable character-card group cursor-pointer" data-character="izabela" style="transition-delay: 0.1s;">
                         <div class="aspect-[3/4] overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-700 shadow-xl">
                             <img src="iza.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1000&auto=format&fit=crop'">
                         </div>
@@ -509,7 +515,7 @@
                             <p class="text-[9px] uppercase tracking-[0.3em] text-gray-400 mt-1">Piękna lalka</p>
                         </div>
                     </div>
-                    <div class="reveal-on-scroll hoverable character-card group" data-character="rzecki" data-cursor="RZECKI" style="transition-delay: 0.2s;">
+                    <div class="reveal-on-scroll hoverable character-card group cursor-pointer" data-character="rzecki" style="transition-delay: 0.2s;">
                         <div class="aspect-[3/4] overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-700 shadow-xl">
                             <img src="rzecki.jpg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" onerror="this.src='https://images.unsplash.com/photo-1542909168-82c3e7fdca5c?q=80&w=1000&auto=format&fit=crop'">
                         </div>
@@ -523,46 +529,46 @@
         </section>
 
         <!-- DUALIZM -->
-        <section id="dualism" class="relative py-64 px-10 md:px-20 overflow-hidden">
+        <section id="dualism" class="relative py-24 md:py-64 px-6 md:px-20 overflow-hidden">
             <div class="blueprint-bg"></div>
             <div class="split-line"></div>
             <div class="max-w-[1600px] mx-auto relative z-10">
-                <div class="text-center mb-40 reveal-on-scroll">
+                <div class="text-center mb-16 md:mb-40 reveal-on-scroll">
                     <span class="era-label">Studium przypadku</span>
                     <h2 class="anatomy-title serif italic">Anatomia rozdarcia</h2>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-0">
                     <div class="dual-column md:border-r border-black/5 reveal-on-scroll">
-                        <h3 class="text-5xl serif italic mb-12 text-right">Dziedzictwo przeszłości</h3>
+                        <h3 class="text-3xl md:text-5xl serif italic mb-8 md:mb-12 md:text-right">Dziedzictwo przeszłości</h3>
                         <div class="space-y-4">
-                            <div class="concept-card text-right">
+                            <div class="concept-card md:text-right">
                                 <span class="roman-num">I.</span>
-                                <p class="text-sm font-light leading-relaxed"><strong>Weltschmerz i ból iIstnienia:</strong> Wokulski, podobnie jak bohaterowie romantyczni, cierpi na przekleństwo nadwrażliwości. Jego słowa: <em>„Boże miłosierny! — szepnął — zdejmijże ze mnie to przekleństwo”</em> stanowią bezpośrednie echo wołania Kordiana: <em>„Boże! zdejm z mego serca jaskółczy niepokój”</em>.</p>
+                                <p class="text-sm font-light leading-relaxed inline md:block"><strong>Weltschmerz i ból istnienia:</strong> Wokulski, podobnie jak bohaterowie romantyczni, cierpi na przekleństwo nadwrażliwości. Jego słowa: <em>„Boże miłosierny! — szepnął — zdejmijże ze mnie to przekleństwo”</em> stanowią bezpośrednie echo wołania Kordiana.</p>
                             </div>
-                            <div class="concept-card text-right">
+                            <div class="concept-card md:text-right">
                                 <span class="roman-num">II.</span>
-                                <p class="text-sm font-light leading-relaxed"><strong>Miłość metafizyczna:</strong> Ubóstwienie Izabeli jako jedynego sensu istnienia. Ucieczka w świat marzeń i nierealnych projekcji, które przesłaniają mu brutalną rzeczywistość klasową.</p>
+                                <p class="text-sm font-light leading-relaxed inline md:block"><strong>Miłość metafizyczna:</strong> Ubóstwienie Izabeli jako jedynego sensu istnienia. Ucieczka w świat marzeń i nierealnych projekcji.</p>
                             </div>
-                            <div class="concept-card text-right border-none">
+                            <div class="concept-card md:text-right border-none">
                                 <span class="roman-num">III.</span>
-                                <p class="text-sm font-light leading-relaxed"><strong>Etos walki:</strong> Piętno powstańca styczniowego. Zsyłka jako fundament tożsamości narodowej i źródło głębokiego wewnętrznego cierpienia.</p>
+                                <p class="text-sm font-light leading-relaxed inline md:block"><strong>Etos walki:</strong> Piętno powstańca styczniowego. Zsyłka jako fundament tożsamości narodowej.</p>
                             </div>
                         </div>
                     </div>
                     <div class="dual-column reveal-on-scroll">
-                        <h3 class="text-5xl serif italic mb-12">Imperatyw przyszłości</h3>
+                        <h3 class="text-3xl md:text-5xl serif italic mb-8 md:mb-12">Imperatyw przyszłości</h3>
                         <div class="space-y-4">
                             <div class="concept-card">
                                 <span class="roman-num">IV.</span>
-                                <p class="text-sm font-light leading-relaxed"><strong>Praca u podstaw i organiczna:</strong> Realizacja pozytywistycznych ideałów poprzez konkretne czyny: pomoc w wykształceniu Marianny (resocjalizacja), wsparcie Wysockich w odbudowie warsztatu oraz praca nad podniesieniem poziomu życia najuboższych mieszkańców Warszawy.</p>
+                                <p class="text-sm font-light leading-relaxed inline md:block"><strong>Praca u podstaw i organiczna:</strong> Realizacja pozytywistycznych ideałów poprzez konkretne czyny: pomoc Mariannie, Wysockim i najuboższym.</p>
                             </div>
                             <div class="concept-card">
                                 <span class="roman-num">V.</span>
-                                <p class="text-sm font-light leading-relaxed"><strong>Kult wiedzy:</strong> Wiara w zbawczą moc nauki i technologii. Wsparcie dla Geista i Ochockiego jako droga do cywilizacyjnego postępu narodu.</p>
+                                <p class="text-sm font-light leading-relaxed inline md:block"><strong>Kult wiedzy:</strong> Wiara w zbawczą moc nauki i technologii. Wsparcie dla Geista i Ochockiego.</p>
                             </div>
                             <div class="concept-card border-none">
                                 <span class="roman-num">VI.</span>
-                                <p class="text-sm font-light leading-relaxed"><strong>Pragmatyzm handlu:</strong> Budowa imperium finansowego. Wiara w moc pieniądza jako realnego narzędzia zmiany społecznej, nie tylko celu samego w sobie.</p>
+                                <p class="text-sm font-light leading-relaxed inline md:block"><strong>Pragmatyzm handlu:</strong> Budowa imperium finansowego. Pieniądz jako narzędzie zmiany.</p>
                             </div>
                         </div>
                     </div>
@@ -571,39 +577,39 @@
         </section>
 
         <!-- MOTYWY -->
-        <section id="themes" class="relative py-32 px-10 md:px-20 overflow-hidden">
+        <section id="themes" class="relative py-24 md:py-32 px-6 md:px-20 overflow-hidden">
             <div class="themes-bg-overlay"></div>
             <div class="max-w-[1200px] mx-auto relative z-10">
-                <div class="mb-20 reveal-on-scroll">
+                <div class="mb-12 md:mb-20 reveal-on-scroll">
                     <span class="era-label">Analiza literacka</span>
                     <h2 class="text-4xl md:text-6xl serif italic mt-4">Ideały & rzeczywistość</h2>
                 </div>
                 <div class="border-t border-black/10">
-                    <div class="theme-item py-10 group cursor-pointer hoverable" data-theme="love" data-cursor="MIŁOŚĆ">
+                    <div class="theme-item py-8 md:py-10 group cursor-pointer hoverable" data-theme="love">
                         <div class="flex justify-between items-center group-hover:px-4 transition-all duration-500">
                             <h3 class="text-2xl md:text-4xl serif italic">Miłość niszcząca</h3>
                             <span class="serif italic text-xl opacity-10 group-hover:opacity-100">I.</span>
                         </div>
                     </div>
-                    <div class="theme-item py-10 group cursor-pointer hoverable" data-theme="theater" data-cursor="TEATR">
+                    <div class="theme-item py-8 md:py-10 group cursor-pointer hoverable" data-theme="theater">
                         <div class="flex justify-between items-center group-hover:px-4 transition-all duration-500">
                             <h3 class="text-2xl md:text-4xl serif italic">Theatrum Mundi</h3>
                             <span class="serif italic text-xl opacity-10 group-hover:opacity-100">II.</span>
                         </div>
                     </div>
-                    <div class="theme-item py-10 group cursor-pointer hoverable" data-theme="wealth" data-cursor="KAPITAŁ">
+                    <div class="theme-item py-8 md:py-10 group cursor-pointer hoverable" data-theme="wealth">
                         <div class="flex justify-between items-center group-hover:px-4 transition-all duration-500">
                             <h3 class="text-2xl md:text-4xl serif italic">Bogactwo i kapitał</h3>
                             <span class="serif italic text-xl opacity-10 group-hover:opacity-100">III.</span>
                         </div>
                     </div>
-                    <div class="theme-item py-10 group cursor-pointer hoverable" data-theme="science" data-cursor="NAUKA">
+                    <div class="theme-item py-8 md:py-10 group cursor-pointer hoverable" data-theme="science">
                         <div class="flex justify-between items-center group-hover:px-4 transition-all duration-500">
                             <h3 class="text-2xl md:text-4xl serif italic">Nauka i postęp</h3>
                             <span class="serif italic text-xl opacity-10 group-hover:opacity-100">IV.</span>
                         </div>
                     </div>
-                    <div class="theme-item py-10 group cursor-pointer hoverable" data-theme="city" data-cursor="MIASTO">
+                    <div class="theme-item py-8 md:py-10 group cursor-pointer hoverable" data-theme="city">
                         <div class="flex justify-between items-center group-hover:px-4 transition-all duration-500">
                             <h3 class="text-2xl md:text-4xl serif italic">Obraz miasta</h3>
                             <span class="serif italic text-xl opacity-10 group-hover:opacity-100">V.</span>
@@ -614,26 +620,26 @@
         </section>
 
         <!-- PODCAST -->
-        <section id="podcast-section" class="py-24 px-10 md:px-20 text-center border-t border-black/5">
+        <section id="podcast-section" class="py-16 md:py-24 px-6 md:px-20 text-center border-t border-black/5">
             <span class="era-label">Słuchowisko</span>
             <h2 class="text-3xl serif italic mt-2 mb-8">Posłuchaj rozmowy o "Lalce"</h2>
-            <button id="open-podcast-btn" class="inline-block px-8 py-3 border border-black/20 hover:bg-black hover:text-white transition-all duration-300 text-xs uppercase tracking-widest hoverable" data-cursor="SŁUCHAJ">Odsłuchaj Materiał</button>
+            <button id="open-podcast-btn" class="inline-block px-8 py-3 border border-black/20 hover:bg-black hover:text-white transition-all duration-300 text-xs uppercase tracking-widest hoverable">Odsłuchaj Materiał</button>
         </section>
 
         <!-- STOPKA -->
-        <footer class="bg-[#0a0a0a] text-[#f4f1ea] pt-48 pb-20 px-10 md:px-20 rounded-t-[5rem] overflow-hidden">
+        <footer class="bg-[#0a0a0a] text-[#f4f1ea] pt-24 md:pt-48 pb-10 md:pb-20 px-6 md:px-20 rounded-t-[3rem] md:rounded-t-[5rem] overflow-hidden">
             <div class="container mx-auto">
-                <div class="text-center mb-40 max-w-5xl mx-auto reveal-on-scroll">
-                     <p class="text-3xl md:text-6xl serif leading-tight italic">
+                <div class="text-center mb-24 md:mb-40 max-w-5xl mx-auto reveal-on-scroll">
+                     <p class="text-2xl md:text-6xl serif leading-tight italic">
                         "Marionetki!... Wszystko marionetki!... Zdaje im się, że robią, co chcą, a robią tylko, co im każe sprężyna..."
                     </p>
-                    <p class="mt-12 text-[var(--gold-color)] text-[10px] uppercase tracking-[0.5em]">— Pamiętnik starego subiekta</p>
+                    <p class="mt-8 md:mt-12 text-[var(--gold-color)] text-[10px] uppercase tracking-[0.5em]">— Pamiętnik starego subiekta</p>
                 </div>
-                <div class="flex flex-col md:flex-row justify-between items-end border-t border-white/5 pt-20 relative">
-    <h1 class="text-[18vw] serif italic leading-[0.7] opacity-5 select-none pointer-events-none">Lalka</h1>
-    <span style="color:#555555; font-size:0.8rem; writing-mode: vertical-rl; text-orientation: upright; position:absolute; right:1rem; bottom:0;">Jacek Koziołek</span>
-</div>
-
+                <div class="flex flex-col md:flex-row justify-between items-end border-t border-white/5 pt-10 md:pt-20 relative">
+                    <h1 class="text-[18vw] serif italic leading-[0.7] opacity-5 select-none pointer-events-none w-full text-center md:text-left">Lalka</h1>
+                    <span class="hidden md:block" style="color:#555555; font-size:0.8rem; writing-mode: vertical-rl; text-orientation: upright; position:absolute; right:1rem; bottom:0;">Jacek Koziołek</span>
+                    <span class="md:hidden text-[#555] text-xs uppercase tracking-widest mt-4 mx-auto">Jacek Koziołek</span>
+                </div>
             </div>
         </footer>
     </main>
@@ -701,36 +707,23 @@
             }
         };
 
-        // --- KURSOR ---
-        const dot = document.querySelector('.cursor-dot');
-        const outline = document.querySelector('.cursor-outline');
-        const cText = document.querySelector('.cursor-text');
+        // --- OBSŁUGA MENU MOBILNEGO ---
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileLinks = mobileMenu.querySelectorAll('a');
 
-        gsap.set(dot, { xPercent: -50, yPercent: -50 });
-        gsap.set(outline, { xPercent: -50, yPercent: -50 });
-
-        const xToDot = gsap.quickTo(dot, "x", { duration: 0.1, ease: "none" });
-        const yToDot = gsap.quickTo(dot, "y", { duration: 0.1, ease: "none" });
-        const xToOutline = gsap.quickTo(outline, "x", { duration: 0.5, ease: "power3" });
-        const yToOutline = gsap.quickTo(outline, "y", { duration: 0.5, ease: "power3" });
-
-        window.addEventListener("mousemove", e => {
-            xToDot(e.clientX);
-            yToDot(e.clientY);
-            xToOutline(e.clientX);
-            yToOutline(e.clientY);
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('open');
+            mobileMenuBtn.textContent = mobileMenu.classList.contains('open') ? 'ZAMKNIJ' : 'MENU';
         });
 
-        document.querySelectorAll('.hoverable').forEach(el => {
-            el.addEventListener('mouseenter', () => {
-                document.body.classList.add('hover-link');
-                cText.innerText = el.dataset.cursor || "ZOBACZ";
-            });
-            el.addEventListener('mouseleave', () => {
-                document.body.classList.remove('hover-link');
-                cText.innerText = "";
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('open');
+                mobileMenuBtn.textContent = 'MENU';
             });
         });
+
 
         // --- MODALE ---
         const charModal = document.getElementById('character-modal-overlay');
@@ -777,11 +770,17 @@
             e.preventDefault(); 
             podcastModal.classList.add('active'); 
         });
+        document.getElementById('mobile-podcast-trigger').addEventListener('click', e => { 
+            e.preventDefault(); 
+            podcastModal.classList.add('active'); 
+            mobileMenu.classList.remove('open');
+            mobileMenuBtn.textContent = 'MENU';
+        });
         document.getElementById('open-podcast-btn').addEventListener('click', () => {
             podcastModal.classList.add('active');
         });
 
-        // NAPRAWA: Lightbox (powiększenie grafiki)
+        // Lightbox
         document.getElementById('podcast-img-trigger').addEventListener('click', () => {
             imageLightbox.classList.add('active');
         });
@@ -824,7 +823,6 @@
             lucide.createIcons();
         });
 
-        // NAPRAWA: Aktualizacja paska i czasu
         audio.addEventListener('timeupdate', () => {
             const currentTime = audio.currentTime;
             const duration = audio.duration;
@@ -876,8 +874,4 @@
         lucide.createIcons();
     </script>
 </body>
-
 </html>
-
-
-
